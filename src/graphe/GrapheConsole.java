@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import javax.swing.WindowConstants;
 
 /**
  *
@@ -56,8 +57,14 @@ public class GrapheConsole {
         Node d=chemin2.pop();
         System.out.println(d.getName()+"-"+d.getDistance());
     }*/
- GrapheFenetre fenetre=new GrapheFenetre(new Graph());
-   fenetre.setVisible(true);
+ /*GrapheFenetre fenetre=new GrapheFenetre(new Graph());
+   fenetre.setVisible(true);*/
+   GanttChart example=new GanttChart("Taches");
+         example.setSize(800, 400);
+         example.setLocationRelativeTo(null);
+         example.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+         example.setVisible(true);
+ 
 
 }
 }
