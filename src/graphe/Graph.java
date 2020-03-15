@@ -29,7 +29,9 @@ public class Graph {
 
     public void addNode(Node nodeA) {
         nodes.add(nodeA);
+        
     }
+ 
     public Node getNodeByName(String name){
         Node n=null;
         for(Node d:this.nodes){
@@ -39,10 +41,13 @@ public class Graph {
         }
         return n;
     }
-    private void  Parcours_Profondeur_Topo(Stack<Node> listeNodes,Node x,Timestamp t){
+    private void  Parcours_Profondeur_Topo(Stack<Node> listeNodes,Node x,int[] t){
         x.setCouleur(Couleur.Gris);
-        t=new Timestamp(t.getTime()+3600000);
-        x.dateDebut=t;
+       /* t=new Timestamp(t.getTime()+3600000);
+        x.dateDebut=t;*/
+      //
+       t[0]+=1;
+       //x.dateDebut=t[0];
         for(Entry<Node,GraphValeur> adjacencyPair:x.getAdjacentNodes().entrySet()){
            Node adj=adjacencyPair.getKey();
            if(adj.getCouleur()==Couleur.Blanc){
@@ -50,8 +55,10 @@ public class Graph {
            }
         }
         x.setCouleur(Couleur.Noir);
-        t=new Timestamp(t.getTime()+3600000);
-        x.dateFin=t;
+       // t=new Timestamp(t.getTime()+3600000);
+        //x.dateFin=t;
+        t[0]+=1;
+        //x.dateFin=t[0];
         listeNodes.push(x);
     }
     public Stack<Node> triTopologique(){
@@ -59,8 +66,9 @@ public class Graph {
         for(Node node:this.getNodes()){
             node.setCouleur(Couleur.Blanc);
         }
-        Timestamp t=new Timestamp(System.currentTimeMillis());
-      
+        //Timestamp t=new Timestamp(System.currentTimeMillis());
+       int[] t=new int[1]; 
+       t[0]=0;
         for(Node node:this.getNodes()){
             if(node.getCouleur()==Couleur.Blanc){
                 Parcours_Profondeur_Topo(listeNodes, node,t);
@@ -146,6 +154,66 @@ public class Graph {
             s2.setDistance(s1.getDistance()+distanceS1_S2);
             s2.getPredecesseur().add(s1);
         }
+    }
+    
+    public void ordonnerTache(Node parent){
+        if(parent==null){
+            parent=this.getNodeByName("DEBUT");
+        }else if(parent.getName().equals("FIN")){
+            parent.dateTard=parent.dateDebutTot;
+            OrdonnerDatePlusTard(parent);
+            return;
+        }
+        //Set Date plus tot et plus tard
+        for(Entry<Node,GraphValeur> adjacencyPair:parent.getAdjacentNodes().entrySet()){
+                Node fils=adjacencyPair.getKey();
+                calculerDateTot(fils);
+        }
+        for(Entry<Node,GraphValeur> adjacencyPair:parent.getAdjacentNodes().entrySet()){
+                Node fils=adjacencyPair.getKey();
+                ordonnerTache(fils);
+        }
+        
+    }
+    private void OrdonnerDatePlusTard(Node parent){
+       if(parent==null){
+            parent=this.getNodeByName("FIN");
+        }else if(parent.getName().equals("DEBUT")){
+            return;
+        }
+     
+        for(Node predecesseur:parent.getPredecesseurNoeud()){
+                calculerDateTard(predecesseur);
+                
+        }
+        for(Node predecesseur:parent.getPredecesseurNoeud()){
+                OrdonnerDatePlusTard(predecesseur);
+                
+        }
+    }
+    private void calculerDateTard(Node node){
+        Float min=Float.MAX_VALUE;
+        for(Entry<Node,GraphValeur> adjacencyPair:node.getAdjacentNodes().entrySet()){
+            Node successeur=adjacencyPair.getKey();
+            Float minTemp=successeur.dateTard-node.dureeTache;
+            if(min>minTemp){
+                min=minTemp;
+            }
+        }
+        node.dateTard=min;
+    }
+    private void calculerDateTot(Node node){
+        List<Node> listePredecesseur=node.getPredecesseurNoeud();
+        Float max=0F;
+        
+        for(Node prec:listePredecesseur){
+            Float maxTemp=prec.dateDebutTot+prec.dureeTache;
+            
+            if(max<maxTemp){
+                max=maxTemp;
+            }
+        }
+        node.dateDebutTot=max;
     }
 }
 

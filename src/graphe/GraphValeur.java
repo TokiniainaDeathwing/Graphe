@@ -15,7 +15,14 @@ public class GraphValeur {
 
     public GraphValeur() {
     }
-
+    public GraphValeur(Float distance,Float flotMax) {
+        this.distance=distance;
+        this.flotMax=flotMax;
+    }
+     public GraphValeur(Float distance) {
+        this.distance=distance;
+       
+    }
     public Float getDistance() {
         return distance;
     }

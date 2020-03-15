@@ -2,6 +2,15 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/toky/Documents/NetBeansProjects/Graphe/src/fenetre/NodeMoveListener.java</file>
+            <file>file:/C:/Users/toky/Documents/NetBeansProjects/Graphe/src/graphe/Graph.java</file>
+            <file>file:/C:/Users/toky/Documents/NetBeansProjects/Graphe/src/graphe/GrapheConsole.java</file>
+            <file>file:/C:/Users/toky/Documents/NetBeansProjects/Graphe/src/graphe/GraphValeur.java</file>
+            <file>file:/C:/Users/toky/Documents/NetBeansProjects/Graphe/src/graphe/GanttChart.java</file>
+            <file>file:/C:/Users/toky/Documents/NetBeansProjects/Graphe/src/graphe/Node.java</file>
+            <file>file:/C:/Users/toky/Documents/NetBeansProjects/Graphe/src/fenetre/PanelGraphe.java</file>
+            <file>file:/C:/Users/toky/Documents/NetBeansProjects/Graphe/src/fenetre/GrapheFenetre.java</file>
+        </group>
     </open-files>
 </project-private>

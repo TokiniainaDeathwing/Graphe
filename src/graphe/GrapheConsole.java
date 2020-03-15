@@ -59,13 +59,42 @@ public class GrapheConsole {
     }*/
  /*GrapheFenetre fenetre=new GrapheFenetre(new Graph());
    fenetre.setVisible(true);*/
-   GanttChart example=new GanttChart("Taches");
+  /* GanttChart example=new GanttChart("Taches");
          example.setSize(800, 400);
          example.setLocationRelativeTo(null);
          example.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
          example.setVisible(true);
  
-
+*/
+  Graph graphe=new Graph();
+  Node debut=new Node("DEBUT");
+  Node a=new Node("A");
+  Node b=new Node("B");
+  Node c=new Node("C");
+  Node d=new Node("D");
+  Node e=new Node("E");
+  
+  Node fin=new Node("FIN");
+  graphe.addNode(debut);
+  graphe.addNode(a);
+  graphe.addNode(b);
+  graphe.addNode(c);
+  graphe.addNode(d);
+  graphe.addNode(e);
+  graphe.addNode(fin);
+  
+  debut.addDestination(a,new GraphValeur(0F));
+  debut.addDestination(b,new GraphValeur(0F));
+  b.addDestination(d, new GraphValeur(4F));
+  a.addDestination(c, new GraphValeur(2F));
+  c.addDestination(e, new GraphValeur(4F));
+  d.addDestination(e, new GraphValeur(5F));
+  
+  e.addDestination(fin, new GraphValeur(6F));
+  graphe.ordonnerTache(debut);
+  for(Node node:graphe.getNodes()){
+      System.out.println(node.toString()+":"+node.dateDebutTot+"|"+node.dateTard);
+  }
 }
 }
     

@@ -426,7 +426,7 @@ public class GrapheFenetre extends javax.swing.JFrame {
         Stack<Node> listeNode=this.graphe.triTopologique();
         while(!listeNode.isEmpty()){
             Node a=listeNode.pop();
-            System.out.println("`"+a.toString()+"` dateDebut:"+a.dateDebut+" dateFin:"+a.dateFin);
+        //    System.out.println("`"+a.toString()+"` dateDebut:"+a.dateDebut+" dateFin:"+a.dateFin);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
