@@ -96,6 +96,12 @@ public class GrapheConsole {
   for(Node node:graphe.getNodes()){
       System.out.println(node.toString()+":"+node.getDateDebut()+"|"+node.getDateFin());
   }
+  GanttChart example=new GanttChart("Taches",graphe);
+         example.setSize(800, 400);
+         example.setLocationRelativeTo(null);
+         example.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+         example.setVisible(true);
+ 
 }
 }
     

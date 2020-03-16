@@ -5,6 +5,7 @@
  */
 package graphe;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Date;
@@ -23,8 +24,10 @@ import org.jfree.data.gantt.TaskSeriesCollection;
  */
 public class GanttChart extends JFrame {
     
-   public GanttChart(String title) {
+   private Graph graphe; 
+   public GanttChart(String title,Graph graphe) {
       super(title);
+      this.graphe=graphe;
       // Create dataset
       IntervalCategoryDataset dataset = getCategoryDataset();
     
@@ -39,63 +42,18 @@ public class GanttChart extends JFrame {
       setContentPane(panel);
    }
       private IntervalCategoryDataset getCategoryDataset() {
-
-      TaskSeries series1 = new TaskSeries("Estimated Date");
-      series1.add(new Task("Requirement",
-            Date.from(LocalDate.of(2017, 7, 3).atStartOfDay().toInstant(ZoneOffset.UTC)),
-            Date.from(LocalDate.of(2017, 7, 7).atStartOfDay().toInstant(ZoneOffset.UTC))
-         ));
-      
-      series1.add(new Task("Design",
-            Date.from(LocalDate.of(2017, 7, 10).atStartOfDay().toInstant(ZoneOffset.UTC)),
-            Date.from(LocalDate.of(2017, 7, 14).atStartOfDay().toInstant(ZoneOffset.UTC))
-         ));
-      
-      series1.add(new Task("Coding",
-            Date.from(LocalDate.of(2017, 7, 17).atStartOfDay().toInstant(ZoneOffset.UTC)),
-            Date.from(LocalDate.of(2017, 7, 21).atStartOfDay().toInstant(ZoneOffset.UTC))
-         ));
-      
-      series1.add(new Task("Testing",
-            Date.from(LocalDate.of(2017, 7, 24).atStartOfDay().toInstant(ZoneOffset.UTC)),
-            Date.from(LocalDate.of(2017, 7, 28).atStartOfDay().toInstant(ZoneOffset.UTC))
-         ));
-      
-      series1.add(new Task("Deployment",
-            Date.from(LocalDate.of(2017, 07, 31).atStartOfDay().toInstant(ZoneOffset.UTC)),
-            Date.from(LocalDate.of(2017, 8, 4).atStartOfDay().toInstant(ZoneOffset.UTC))
-         ));
       
       
-      TaskSeries series2 = new TaskSeries("Actual Date");
-      series2.add(new Task("Requirement",
-            Date.from(LocalDate.of(2017, 7, 3).atStartOfDay().toInstant(ZoneOffset.UTC)),
-            Date.from(LocalDate.of(2017, 7, 05).atStartOfDay().toInstant(ZoneOffset.UTC))
-         ));
-      
-      series2.add(new Task("Design",
-            Date.from(LocalDate.of(2017, 7, 6).atStartOfDay().toInstant(ZoneOffset.UTC)),
-            Date.from(LocalDate.of(2017, 7, 17).atStartOfDay().toInstant(ZoneOffset.UTC))
-         ));
-      
-      series2.add(new Task("Coding",
-            Date.from(LocalDate.of(2017, 7, 18).atStartOfDay().toInstant(ZoneOffset.UTC)),
-            Date.from(LocalDate.of(2017, 7, 27).atStartOfDay().toInstant(ZoneOffset.UTC))
-         ));
-      
-      series2.add(new Task("Testing",
-            Date.from(LocalDate.of(2017, 7, 28).atStartOfDay().toInstant(ZoneOffset.UTC)),
-            Date.from(LocalDate.of(2017, 8, 1).atStartOfDay().toInstant(ZoneOffset.UTC))
-         ));
-      
-      series2.add(new Task("Deployment",
-            Date.from(LocalDate.of(2017, 8, 2).atStartOfDay().toInstant(ZoneOffset.UTC)),
-            Date.from(LocalDate.of(2017, 8, 4).atStartOfDay().toInstant(ZoneOffset.UTC))
-         ));
-
+      TaskSeries series1 = new TaskSeries("Date plus Tot");
+      for(Node node:this.graphe.getNodes()){
+          Task task=new Task(node.getName(),node.getDateDebut(),node.getDateFin());
+          
+          series1.add( task);
+      }
       TaskSeriesCollection dataset = new TaskSeriesCollection();
+     
       dataset.add(series1);
-      dataset.add(series2);
+      
       return dataset;
       }
     
