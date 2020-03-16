@@ -26,10 +26,30 @@ public class Node implements Comparable {
     private Float distance=Float.MAX_VALUE;
     private int x=0,y=0;
     private Map<Node, GraphValeur> adjacentNodes = new HashMap<>();
-    public Float dateDebutTot=0F;
-    public Float dateTard=0F;
-    public Float dureeTache=0F;
+    public long dateDebutTot=0;
+    public long dateTard=0;
+    public long dureeTache=0;
     public boolean visited;
+    private Timestamp dateDebut;
+    private Timestamp dateFin;
+
+    public Timestamp getDateDebut() {
+        return dateDebut;
+    }
+
+    public void setDateDebut(Timestamp dateDebut) {
+        this.dateDebut = dateDebut;
+    }
+
+    public Timestamp getDateFin() {
+        return dateFin;
+    }
+
+    public void setDateFin(Timestamp dateFin) {
+        this.dateFin = dateFin;
+    }
+    
+    
     public Couleur getCouleur() {
         return couleur;
     }
@@ -86,7 +106,7 @@ public class Node implements Comparable {
     public void addDestination(Node destination, GraphValeur valeur) {
         adjacentNodes.put(destination, valeur);
         destination.getPredecesseurNoeud().add(this);
-        this.dureeTache=valeur.getDistance();
+        this.dureeTache=valeur.getDistance().longValue();
     }
 
     public Node(String name) {
@@ -170,7 +190,9 @@ public class Node implements Comparable {
             return 1;
         }
     }
-    
+    public boolean isNoeud(){
+        return !this.getName().equals("DEBUT") && !this.getName().equals("FIN");
+    }
     
     
 }

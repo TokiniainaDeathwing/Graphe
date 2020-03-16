@@ -7,6 +7,7 @@ package graphe;
 
 import arbre.ArbreGeneral;
 import fenetre.GrapheFenetre;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -91,9 +92,9 @@ public class GrapheConsole {
   d.addDestination(e, new GraphValeur(5F));
   
   e.addDestination(fin, new GraphValeur(6F));
-  graphe.ordonnerTache(debut);
+  graphe.ordonnerTache(debut,new Timestamp(System.currentTimeMillis()));
   for(Node node:graphe.getNodes()){
-      System.out.println(node.toString()+":"+node.dateDebutTot+"|"+node.dateTard);
+      System.out.println(node.toString()+":"+node.getDateDebut()+"|"+node.getDateFin());
   }
 }
 }

@@ -25,7 +25,7 @@ public class Graph {
         Gris,
         Noir
     }
-    private Set<Node> nodes = new HashSet<>();
+    private List<Node> nodes = new ArrayList<>();
 
     public void addNode(Node nodeA) {
         nodes.add(nodeA);
@@ -131,11 +131,11 @@ public class Graph {
         }
         
     }
-    public Set<Node> getNodes() {
+    public List<Node> getNodes() {
         return nodes;
     }
 
-    public void setNodes(Set<Node> nodes) {
+    public void setNodes(List<Node> nodes) {
         this.nodes = nodes;
     }
     private static Node trouver_min(Set<Node> Q){
@@ -156,12 +156,13 @@ public class Graph {
         }
     }
     
-    public void ordonnerTache(Node parent){
+    public void ordonnerTache(Node parent,Timestamp debutProjet){
         if(parent==null){
             parent=this.getNodeByName("DEBUT");
         }else if(parent.getName().equals("FIN")){
             parent.dateTard=parent.dateDebutTot;
             OrdonnerDatePlusTard(parent);
+            AffecterDateProjet(debutProjet);
             return;
         }
         //Set Date plus tot et plus tard
@@ -171,9 +172,17 @@ public class Graph {
         }
         for(Entry<Node,GraphValeur> adjacencyPair:parent.getAdjacentNodes().entrySet()){
                 Node fils=adjacencyPair.getKey();
-                ordonnerTache(fils);
+                ordonnerTache(fils,debutProjet);
         }
         
+    }
+    public void AffecterDateProjet(Timestamp debutProjet){
+        for(Node node:this.nodes){
+            Timestamp dateDebut=new Timestamp(debutProjet.getTime()+node.dateDebutTot*24*3600*1000);
+            Timestamp dateFin=new Timestamp(dateDebut.getTime()+node.dureeTache*24*3600*1000);
+            node.setDateFin(dateFin);
+            node.setDateDebut(dateDebut);
+        }
     }
     private void OrdonnerDatePlusTard(Node parent){
        if(parent==null){
@@ -192,10 +201,10 @@ public class Graph {
         }
     }
     private void calculerDateTard(Node node){
-        Float min=Float.MAX_VALUE;
+        long min=Long.MAX_VALUE;
         for(Entry<Node,GraphValeur> adjacencyPair:node.getAdjacentNodes().entrySet()){
             Node successeur=adjacencyPair.getKey();
-            Float minTemp=successeur.dateTard-node.dureeTache;
+            long minTemp=successeur.dateTard-node.dureeTache;
             if(min>minTemp){
                 min=minTemp;
             }
@@ -204,10 +213,10 @@ public class Graph {
     }
     private void calculerDateTot(Node node){
         List<Node> listePredecesseur=node.getPredecesseurNoeud();
-        Float max=0F;
+        long max=0;
         
         for(Node prec:listePredecesseur){
-            Float maxTemp=prec.dateDebutTot+prec.dureeTache;
+            long maxTemp=prec.dateDebutTot+prec.dureeTache;
             
             if(max<maxTemp){
                 max=maxTemp;
