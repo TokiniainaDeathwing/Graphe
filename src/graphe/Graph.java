@@ -25,7 +25,7 @@ public class Graph {
         Gris,
         Noir
     }
-    private List<Node> nodes = new ArrayList<>();
+    private List<Node> nodes = new ArrayList<Node>();
 
     public void addNode(Node nodeA) {
         nodes.add(nodeA);
@@ -157,6 +157,7 @@ public class Graph {
     }
     
     public void ordonnerTache(Node parent,Timestamp debutProjet){
+        this.creerDebutEtFin();
         if(parent==null){
             parent=this.getNodeByName("DEBUT");
         }else if(parent.getName().equals("FIN")){
@@ -165,6 +166,7 @@ public class Graph {
             AffecterDateProjet(debutProjet);
             return;
         }
+        System.out.println("Parent:"+parent.toString());
         //Set Date plus tot et plus tard
         for(Entry<Node,GraphValeur> adjacencyPair:parent.getAdjacentNodes().entrySet()){
                 Node fils=adjacencyPair.getKey();
@@ -176,10 +178,52 @@ public class Graph {
         }
         
     }
+    public List<Node> noeudSansPredecesseur(){
+        List<Node> liste=new ArrayList<Node>();
+        for(Node node:this.nodes){
+            if(!node.getName().equals("DEBUT")&&node.getPredecesseurNoeud().isEmpty()){
+                liste.add(node);
+            }
+        }
+        return liste;
+    }
+    
+    public List<Node> noeudSansSuccesseur(){
+        List<Node> liste=new ArrayList<Node>();
+        for(Node node:this.nodes){
+            //System.out.println(node.toString()+this.nodes.size());
+            if(!node.getName().equals("FIN")&&node.getAdjacentNodes().isEmpty()){
+                liste.add(node);
+            }
+        }
+        return liste;
+    }
+    private void creerDebutEtFin(){
+        Node debut=this.getNodeByName("DEBUT");
+        if(debut==null){
+            debut=new Node("DEBUT");
+            this.addNode(debut);
+            List<Node> liste=this.noeudSansPredecesseur();
+            for(Node node:liste){
+                debut.addDestination(node, new GraphValeur(0F));
+            }
+        }
+        Node fin=this.getNodeByName("FIN");
+        if(fin==null){
+            fin=new Node("FIN");
+            this.addNode(fin);
+            List<Node> liste=this.noeudSansSuccesseur();
+            System.out.println(liste.size());
+            for(Node node:liste){
+                
+                node.addDestination(fin, new GraphValeur(node.dureeTache));  
+            }
+        }   
+    }
     public void AffecterDateProjet(Timestamp debutProjet){
         for(Node node:this.nodes){
-            Timestamp dateDebut=new Timestamp(debutProjet.getTime()+node.dateDebutTot*24*3600*1000);
-            Timestamp dateFin=new Timestamp(dateDebut.getTime()+node.dureeTache*24*3600*1000);
+            Timestamp dateDebut=new Timestamp(debutProjet.getTime()+node.dateDebutTot.longValue()*24*3600*1000);
+            Timestamp dateFin=new Timestamp(dateDebut.getTime()+node.dureeTache.longValue()*24*3600*1000);
             node.setDateFin(dateFin);
             node.setDateDebut(dateDebut);
         }
@@ -201,10 +245,10 @@ public class Graph {
         }
     }
     private void calculerDateTard(Node node){
-        long min=Long.MAX_VALUE;
+        Float min=Float.MAX_VALUE;
         for(Entry<Node,GraphValeur> adjacencyPair:node.getAdjacentNodes().entrySet()){
             Node successeur=adjacencyPair.getKey();
-            long minTemp=successeur.dateTard-node.dureeTache;
+            Float minTemp=successeur.dateTard-node.dureeTache;
             if(min>minTemp){
                 min=minTemp;
             }
@@ -213,10 +257,10 @@ public class Graph {
     }
     private void calculerDateTot(Node node){
         List<Node> listePredecesseur=node.getPredecesseurNoeud();
-        long max=0;
+        Float max=0F;
         
         for(Node prec:listePredecesseur){
-            long maxTemp=prec.dateDebutTot+prec.dureeTache;
+            Float maxTemp=prec.dateDebutTot+prec.dureeTache;
             
             if(max<maxTemp){
                 max=maxTemp;

@@ -76,23 +76,23 @@ public class GrapheConsole {
   Node e=new Node("E");
   
   Node fin=new Node("FIN");
-  graphe.addNode(debut);
+ // graphe.addNode(debut);
   graphe.addNode(a);
   graphe.addNode(b);
   graphe.addNode(c);
   graphe.addNode(d);
   graphe.addNode(e);
-  graphe.addNode(fin);
+  //graphe.addNode(fin);
   
-  debut.addDestination(a,new GraphValeur(0F));
-  debut.addDestination(b,new GraphValeur(0F));
+  //debut.addDestination(a,new GraphValeur(0F));
+  //debut.addDestination(b,new GraphValeur(0F));
   b.addDestination(d, new GraphValeur(4F));
   a.addDestination(c, new GraphValeur(2F));
   c.addDestination(e, new GraphValeur(4F));
   d.addDestination(e, new GraphValeur(5F));
   
-  e.addDestination(fin, new GraphValeur(6F));
-  graphe.ordonnerTache(debut,new Timestamp(System.currentTimeMillis()));
+  //e.addDestination(fin, new GraphValeur(6F));
+  graphe.ordonnerTache(null,new Timestamp(System.currentTimeMillis()));
   for(Node node:graphe.getNodes()){
       System.out.println(node.toString()+":"+node.getDateDebut()+"|"+node.getDateFin());
   }
