@@ -5,6 +5,7 @@
  */
 package graphe;
 
+import fenetre.GanttChart;
 import arbre.ArbreGeneral;
 import fenetre.GrapheFenetre;
 import java.sql.Timestamp;
@@ -92,7 +93,7 @@ public class GrapheConsole {
   d.addDestination(e, new GraphValeur(5F));
   
   //e.addDestination(fin, new GraphValeur(6F));
-  graphe.ordonnerTache(null,new Timestamp(System.currentTimeMillis()));
+  /*graphe.ordonnerTache(null,new Timestamp(System.currentTimeMillis()));
   for(Node node:graphe.getNodes()){
       System.out.println(node.toString()+":"+node.getDateDebut()+"|"+node.getDateFin());
   }
@@ -102,7 +103,11 @@ public class GrapheConsole {
          example.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
          example.setVisible(true);
  
+*/
+  GrapheFenetre fenetre=new GrapheFenetre(graphe);
+  fenetre.setVisible(true);
 }
+    
 }
     
     

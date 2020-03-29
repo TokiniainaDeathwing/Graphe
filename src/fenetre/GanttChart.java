@@ -3,14 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package graphe;
+package fenetre;
 
+import graphe.Graph;
+import graphe.Node;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Date;
 import org.jfree.data.gantt.Task;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -27,6 +30,7 @@ public class GanttChart extends JFrame {
    private Graph graphe; 
    public GanttChart(String title,Graph graphe) {
       super(title);
+  
       this.graphe=graphe;
       // Create dataset
       IntervalCategoryDataset dataset = getCategoryDataset();
@@ -40,6 +44,11 @@ public class GanttChart extends JFrame {
 
       ChartPanel panel = new ChartPanel(chart);
       setContentPane(panel);
+            try{
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        }catch(Exception exc){
+            
+        }
    }
       private IntervalCategoryDataset getCategoryDataset() {
       
