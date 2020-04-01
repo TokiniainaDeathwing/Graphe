@@ -270,27 +270,47 @@ public class Graph {
         }
         node.dateDebutTot=max;
     }
-    private void trouverChaine(Chaine chaine,Node node){
+    private void trouverChaine(Chaine chaine,Node node,List<Node> listePuits){
+     
+        if(listePuits.contains(node)){
+            
+            return;
+        }
         for(Entry<Node,GraphValeur> adjacencyPair:node.getAdjacentNodes().entrySet()){
            Node successeur=adjacencyPair.getKey();
+           if(successeur.sature){
+               continue;
+           }
+           if(successeur.getName().equals("FIN")){
+             
+               return;
+           }
+           
            //test saturation
            GraphValeur valeur=adjacencyPair.getValue();
            if(valeur.getDistance()<valeur.getFlotMax()){
                chaine.addNode(successeur);
-               trouverChaine(chaine,successeur);
+              // System.out.print(successeur+"-");
+               trouverChaine(chaine,successeur,listePuits);
                return;
            }
         }
         for(Node n:node.getPredecesseurNoeud()){
+           if(chaine.contains(n)||n.sature){
+               continue;
+           } 
            Map<Node,GraphValeur> adjacencyPair=n.getAdjacentNodes();
            //test saturation
            GraphValeur valeur=adjacencyPair.get(node);
+
            if(valeur.getDistance()>0){
             chaine.addNode(n);
-            trouverChaine(chaine,n);
+             //System.out.print(n+"-");
+            trouverChaine(chaine,n,listePuits);
             return;
            }
         }
+     
         return;         
                  
     }
@@ -299,11 +319,21 @@ public class Graph {
         List<Node> listeSources=this.noeudSansPredecesseur();
         List<Node> listePuits=this.noeudSansSuccesseur();
         for(Node source:listeSources){
-            chaine.addNode(source);
-            trouverChaine(chaine,source);
+            if(!source.sature){
+              chaine.addNode(source);
+            }
+            trouverChaine(chaine,source,listePuits);
+
             if(chaine.isComplete(listePuits)){
                 break;
             }else{
+                if(!chaine.isEmpty()){
+                    Node fin=chaine.getListeNoeud().get(chaine.getListeNoeud().size()-1);
+                    fin.sature=true;
+                    if(chaine.getListeNoeud().size()==1){
+                        source.sature=true;
+                    }
+                }
                 chaine.clear();
             }
         }
@@ -311,6 +341,7 @@ public class Graph {
     }
     public void maximiserFlot(){
         Chaine chaine=trouverChaineAmeliorante();
+        System.out.println("Chaine ameliorante:"+chaine.toString());
         if(chaine.isEmpty()){
             return;
         }else{

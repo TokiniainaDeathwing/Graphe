@@ -32,7 +32,7 @@ public class Node implements Comparable {
     public boolean visited;
     private Timestamp dateDebut;
     private Timestamp dateFin;
-
+    public boolean sature=false;
     public Timestamp getDateDebut() {
         return dateDebut;
     }
@@ -122,7 +122,7 @@ public class Node implements Comparable {
 
 
 
-
+    
 
 
 

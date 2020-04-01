@@ -15,6 +15,14 @@ import java.util.Map;
  */
 public class Chaine {
     private List<Node> listeNoeud=new ArrayList<Node>();
+
+    public List<Node> getListeNoeud() {
+        return listeNoeud;
+    }
+
+    public void setListeNoeud(List<Node> listeNoeud) {
+        this.listeNoeud = listeNoeud;
+    }
     
     public void addNode(Node a){
         listeNoeud.add(a);
@@ -43,6 +51,9 @@ public class Chaine {
             str+=node.toString()+"-";
         }
         return str;
+    }
+    public boolean contains(Node a){
+        return this.listeNoeud.contains(a);
     }
     public Float trouverFlotAmelioration(){
         Float min=Float.MAX_VALUE;
