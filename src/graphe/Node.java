@@ -36,7 +36,6 @@ public class Node implements Comparable {
     public Timestamp getDateDebut() {
         return dateDebut;
     }
-
     public void setDateDebut(Timestamp dateDebut) {
         this.dateDebut = dateDebut;
     }

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
@@ -269,16 +270,53 @@ public class Graph {
         }
         node.dateDebutTot=max;
     }
-    public void maximiserFlot(){
+    private void trouverChaine(Chaine chaine,Node node){
+        for(Entry<Node,GraphValeur> adjacencyPair:node.getAdjacentNodes().entrySet()){
+           Node successeur=adjacencyPair.getKey();
+           //test saturation
+           GraphValeur valeur=adjacencyPair.getValue();
+           if(valeur.getDistance()<valeur.getFlotMax()){
+               chaine.addNode(successeur);
+               trouverChaine(chaine,successeur);
+               return;
+           }
+        }
+        for(Node n:node.getPredecesseurNoeud()){
+           Map<Node,GraphValeur> adjacencyPair=n.getAdjacentNodes();
+           //test saturation
+           GraphValeur valeur=adjacencyPair.get(node);
+           if(valeur.getDistance()>0){
+            chaine.addNode(n);
+            trouverChaine(chaine,n);
+            return;
+           }
+        }
+        return;         
+                 
+    }
+    private Chaine trouverChaineAmeliorante(){
         Chaine chaine=new Chaine();
-        chaine.addNode(this.getNodeByName("s"));
-        chaine.addNode(this.getNodeByName("e"));
-        chaine.addNode(this.getNodeByName("d"));
-        chaine.addNode(this.getNodeByName("a"));
-        chaine.addNode(this.getNodeByName("b"));
-        chaine.addNode(this.getNodeByName("t"));
-        chaine.ameliorerChaine();
-        
+        List<Node> listeSources=this.noeudSansPredecesseur();
+        List<Node> listePuits=this.noeudSansSuccesseur();
+        for(Node source:listeSources){
+            chaine.addNode(source);
+            trouverChaine(chaine,source);
+            if(chaine.isComplete(listePuits)){
+                break;
+            }else{
+                chaine.clear();
+            }
+        }
+        return chaine;
+    }
+    public void maximiserFlot(){
+        Chaine chaine=trouverChaineAmeliorante();
+        if(chaine.isEmpty()){
+            return;
+        }else{
+            chaine.ameliorerChaine();
+        }
+        maximiserFlot();
     }
 }
 

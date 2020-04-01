@@ -19,6 +19,31 @@ public class Chaine {
     public void addNode(Node a){
         listeNoeud.add(a);
     }
+    
+    public boolean isEmpty(){
+        return listeNoeud.isEmpty();
+    }
+    
+    public void clear(){
+        listeNoeud.clear();
+    }
+    public boolean isComplete(List<Node> puits){
+        if(!listeNoeud.isEmpty()){
+             Node fin=listeNoeud.get(listeNoeud.size()-1);
+             if(puits.contains(fin)){
+                 return true;
+             }
+        }
+        
+        return false;
+    }
+    public String toString(){
+        String str="";
+        for(Node node:this.listeNoeud){
+            str+=node.toString()+"-";
+        }
+        return str;
+    }
     public Float trouverFlotAmelioration(){
         Float min=Float.MAX_VALUE;
         int n=listeNoeud!=null?listeNoeud.size():0;
