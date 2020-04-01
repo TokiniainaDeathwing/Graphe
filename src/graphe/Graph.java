@@ -95,6 +95,7 @@ public class Graph {
             Node s1=trouver_min(Q);
             Q.remove(s1);
             //pour chaque nœud s2 voisin de s1 faire
+            System.out.println(s1.toString());
             for(Entry<Node,GraphValeur> adjacencyPair:s1.getAdjacentNodes().entrySet()){
                 Node s2=adjacencyPair.getKey();
                 Float distanceS1_S2 = adjacencyPair.getValue().getDistance();

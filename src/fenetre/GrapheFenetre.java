@@ -309,6 +309,11 @@ public class GrapheFenetre extends javax.swing.JFrame {
         });
 
         jButton4.setText("Enregister");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelCheminLayout = new javax.swing.GroupLayout(panelChemin);
         panelChemin.setLayout(panelCheminLayout);
@@ -580,6 +585,27 @@ public class GrapheFenetre extends javax.swing.JFrame {
         this.buttonTaches.setEnabled(!this.buttonTaches.isEnabled());
         this.dateDebut.setEnabled(!this.dateDebut.isEnabled());
     }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        
+        try{
+                JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+		jfc.setDialogTitle("Choisir un texte");
+                
+		jfc.setAcceptAllFileFilterUsed(false);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Texte uniquement", "txt");
+		jfc.addChoosableFileFilter(filter);
+                
+		int returnValue = jfc.showOpenDialog(null);
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			System.out.println(jfc.getSelectedFile().getPath());
+                        //this.importGraph(jfc.getSelectedFile());
+		}
+        }catch(Exception exc){
+            exc.printStackTrace();
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
