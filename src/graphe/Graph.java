@@ -269,5 +269,16 @@ public class Graph {
         }
         node.dateDebutTot=max;
     }
+    public void maximiserFlot(){
+        Chaine chaine=new Chaine();
+        chaine.addNode(this.getNodeByName("s"));
+        chaine.addNode(this.getNodeByName("e"));
+        chaine.addNode(this.getNodeByName("d"));
+        chaine.addNode(this.getNodeByName("a"));
+        chaine.addNode(this.getNodeByName("b"));
+        chaine.addNode(this.getNodeByName("t"));
+        chaine.ameliorerChaine();
+        
+    }
 }
 

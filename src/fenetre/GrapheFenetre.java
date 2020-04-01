@@ -5,6 +5,7 @@
  */
 package fenetre;
 
+import graphe.Chaine;
 import graphe.Graph;
 import graphe.GraphValeur;
 import graphe.Node;
@@ -248,6 +249,7 @@ public class GrapheFenetre extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         panelAjout = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         dateDebut = new javax.swing.JTextField();
@@ -315,6 +317,13 @@ public class GrapheFenetre extends javax.swing.JFrame {
             }
         });
 
+        jButton5.setText("Maximisation Flot");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelCheminLayout = new javax.swing.GroupLayout(panelChemin);
         panelChemin.setLayout(panelCheminLayout);
         panelCheminLayout.setHorizontalGroup(
@@ -325,7 +334,9 @@ public class GrapheFenetre extends javax.swing.JFrame {
                     .addGroup(panelCheminLayout.createSequentialGroup()
                         .addComponent(jButton2)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton4))
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton5))
                     .addGroup(panelCheminLayout.createSequentialGroup()
                         .addGroup(panelCheminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(textDepart, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -347,7 +358,8 @@ public class GrapheFenetre extends javax.swing.JFrame {
                 .addGroup(panelCheminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2)
-                    .addComponent(jButton4))
+                    .addComponent(jButton4)
+                    .addComponent(jButton5))
                 .addGap(26, 26, 26)
                 .addGroup(panelCheminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -607,6 +619,15 @@ public class GrapheFenetre extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        this.graphe.maximiserFlot();
+        this.panelGraphe.repaint();
+        
+        
+        
+    }//GEN-LAST:event_jButton5ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -621,6 +642,7 @@ public class GrapheFenetre extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
