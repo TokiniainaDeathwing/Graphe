@@ -23,10 +23,14 @@ import java.awt.geom.AffineTransform;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -517,6 +521,40 @@ public class GrapheFenetre extends javax.swing.JFrame {
         this.rechercherPlusCourtChemin(this.textDepart.getText().trim(), this.textFin.getText().trim());
         panelChemin.repaint();
     }//GEN-LAST:event_boutonCheminActionPerformed
+    
+    private void saveFile(File fichier){
+        try {
+            if(!fichier.exists()){
+                fichier.createNewFile();
+            }
+            
+            FileWriter filewriter=new FileWriter(fichier);
+            String nodeinfo="";
+            int n=this.graphe.getNodes()==null?0:this.graphe.getNodes().size();
+            for(int i=0;i<n;i++){
+               Node node=this.graphe.getNodes().get(i);
+               nodeinfo=node.getName()+":"+node.getX()+","+node.getY();
+               if(i!=n-1){
+                   nodeinfo+=";";
+               }
+            }
+            nodeinfo.trim();
+            filewriter.write(nodeinfo+"\n");
+            String nodeInfo;
+            for(Node node:this.graphe.getNodes()){
+                for(Map.Entry<Node,GraphValeur> adjacencyPair:node.getAdjacentNodes().entrySet()){
+                    String str="";
+                    Node destination=adjacencyPair.getKey();
+                    GraphValeur valeur=adjacencyPair.getValue();
+                    str=node.getName()+"->"+destination.getName()+":"+valeur.getDistance()+":"+valeur.getFlotMax()+"\n";
+                    filewriter.write(str);
+                }   
+            }
+            filewriter.close();
+        } catch (Exception ex) {
+         ex.printStackTrace();
+        }
+    }
     private void importGraph(File fichier){
        this.graphe=new Graph();
        int ligne=0;
