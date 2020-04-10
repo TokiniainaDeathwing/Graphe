@@ -6,6 +6,7 @@
 package graphe;
 
 import graphe.Graph.Couleur;
+import java.awt.Color;
 import java.awt.Point;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -33,6 +34,17 @@ public class Node implements Comparable {
     private Timestamp dateDebut;
     private Timestamp dateFin;
     public boolean sature=false;
+    private Color backgroundColor;
+
+    public Color getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+    
+    
     public Timestamp getDateDebut() {
         return dateDebut;
     }

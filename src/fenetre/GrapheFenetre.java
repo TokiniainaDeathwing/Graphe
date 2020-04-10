@@ -62,7 +62,9 @@ public class GrapheFenetre extends javax.swing.JFrame {
         }catch(Exception exc){
             
         }
+        this.graphe.triTopologique();
         createLabels();
+    
     }
     
     private void initGraphePosition(){
@@ -92,7 +94,7 @@ public class GrapheFenetre extends javax.swing.JFrame {
             //System.out.println(d.getName()+":"+d.getX()+","+d.getY());
             
             JButton btn=new JButton(d.getName());
-            
+          
             btn.setBounds(d.getX(), d.getY(), rayonNode, rayonNode);
             btn.addMouseMotionListener(new NodeMoveListener(d,panelGraphe));
             
@@ -589,8 +591,10 @@ public class GrapheFenetre extends javax.swing.JFrame {
                  //a.setFloatMax(Float.parseFloat(values[2]));
              }
            } 
-           
+          
+          this.graphe.triTopologique(); 
           this.createLabels();
+          
           panelGraphe.repaint();
        }catch(Exception exc){
            exc.printStackTrace();

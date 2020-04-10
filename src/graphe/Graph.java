@@ -6,6 +6,7 @@
 package graphe;
 
 import arbre.ArbreGeneral;
+import java.awt.Color;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,6 +27,9 @@ public class Graph {
         Gris,
         Noir
     }
+    private Color[] listeCouleurs={
+        Color.RED,Color.BLUE,Color.GRAY,Color.GRAY,Color.CYAN,Color.YELLOW,Color.PINK,Color.RED,Color.BLUE,Color.GRAY,Color.GRAY,Color.CYAN,Color.YELLOW,Color.PINK
+    };
     private List<Node> nodes = new ArrayList<Node>();
 
     public void addNode(Node nodeA) {
@@ -48,6 +52,8 @@ public class Graph {
         x.dateDebut=t;*/
       //
        t[0]+=1;
+       x.setBackgroundColor(listeCouleurs[t[0]]);
+       System.out.println(t[0]);
        //x.dateDebut=t[0];
         for(Entry<Node,GraphValeur> adjacencyPair:x.getAdjacentNodes().entrySet()){
            Node adj=adjacencyPair.getKey();
@@ -58,7 +64,7 @@ public class Graph {
         x.setCouleur(Couleur.Noir);
        // t=new Timestamp(t.getTime()+3600000);
         //x.dateFin=t;
-        t[0]+=1;
+        //t[0]+=1;
         //x.dateFin=t[0];
         listeNodes.push(x);
     }
