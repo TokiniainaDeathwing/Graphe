@@ -106,7 +106,7 @@ public class GrapheConsole {
 */
   graphe.colorierGraphe();
    for(Node node:graphe.getNodes()){
-      System.out.println(node.toString()+":"+node.tdebut+"/"+node.tfin);
+     // System.out.println(node.toString()+":"+node.tdebut+"/"+node.tfin);
   }
   GrapheFenetre fenetre=new GrapheFenetre(graphe);
   fenetre.setVisible(true);

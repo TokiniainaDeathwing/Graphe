@@ -16,6 +16,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -52,6 +54,7 @@ public class GrapheFenetre extends javax.swing.JFrame {
     private int distanceNoeud=20;
     private volatile int draggedAtX, draggedAtY;
     private List<Stack<Comparable>> listeChemin=new ArrayList<Stack<Comparable>>();
+    public String cheminAffiche="";
     public GrapheFenetre(Graph graphe) {
         this.graphe=graphe;
         
@@ -121,13 +124,15 @@ public class GrapheFenetre extends javax.swing.JFrame {
             }
         }
         this.listeChemin=this.graphe.PlusCourtchemin(nodeDepart, nodeFin);
+        boutonAfficher();
         panelGraphe.repaint();
         
     }
-    private void dessinerChemin(Graphics g){
-        int x=textDepart.getX();
-        int y=155;
-        
+    private void boutonAfficher(){
+        this.panelChemin.removeAll();
+        int x=5;
+        int y=15;
+        //this.panelChemin.removeAll();
         for(Stack<Comparable> liste:this.listeChemin){
             String text="";
             float distance=0;
@@ -135,9 +140,46 @@ public class GrapheFenetre extends javax.swing.JFrame {
                 text+=n.toString()+"-";
                 distance=((Node)n).getDistance();
             }
+            //text+=distance;
+            
+            System.out.println("Chemin:"+text);
+            JButton afficher=new JButton("Afficher");
+            afficher.addActionListener(new AffichageCheminListener(this,text));
+            afficher.setBounds(x+200, y-15, 150, 20);
+            
+            this.panelChemin.add(afficher);
+           
+             y+=30;
+        }
+        
+    }
+    private void dessinerChemin(Graphics g){
+        //this.panelChemin.removeAll();
+        int x=5;
+        int y=15;
+        //this.panelChemin.removeAll();
+        for(Stack<Comparable> liste:this.listeChemin){
+            String text="";
+            float distance=0;
+            for(Comparable n:liste){
+                text+=n.toString()+"-";
+                distance=((Node)n).getDistance();
+            }
+            if(cheminAffiche.contains(text)){
+                g.setColor(Color.red);
+            }
             text+=distance;
+            
+            System.out.println("Chemin:"+text);
+          /*  JButton afficher=new JButton("Afficher");
+            
+            afficher.setBounds(x+200, y-15, 150, 20);
+            
+            this.panelChemin.add(afficher);
+           */
+            
             g.drawString(text, x, y);
-             
+            g.setColor(Color.black);
              y+=30;
         }
         
@@ -168,7 +210,7 @@ public class GrapheFenetre extends javax.swing.JFrame {
     }
     private boolean cheminsContains(Node a,Node b){
        // System.out.println("Node :"+b.toString()+" size:"+this.listeChemin.size());
-        for(Stack<Comparable> list:this.listeChemin){
+        /*for(Stack<Comparable> list:this.listeChemin){
             String text="";
             for(Comparable c:list){
                 text+=c.toString()+"-";
@@ -178,9 +220,11 @@ public class GrapheFenetre extends javax.swing.JFrame {
                 return true;
             }
             // System.out.println();
-        }
-       
-        return false;
+        }*/
+           return (cheminAffiche.contains(a.getName()+"-"+b.getName()));
+                
+            
+        
     }
     private void drawDirection(Graphics g,Node a,Node b,Float distance,Float flotMax){
         Point[] locations=a.getSensFleche(b, rayonNode);
@@ -193,7 +237,7 @@ public class GrapheFenetre extends javax.swing.JFrame {
         int ydist=((y+endY)/2)+15;
         ydist-=10;
         Graphics2D g2 = (Graphics2D) g.create();
-        g2.setColor(Color.BLUE);
+        g2.setColor(Color.GREEN);
         if(this.cheminsContains(a, b)){
             g2.setColor(Color.RED);
         }
@@ -201,13 +245,21 @@ public class GrapheFenetre extends javax.swing.JFrame {
         g2.setStroke(new BasicStroke(thickness));
         
         g2.drawLine(x, y, endX, endY);;
+        g2.setColor(Color.GRAY);
+        g2.fillOval(x-3, y-5, 10, 10);
+        
+        
         String stDist=""+distance;
         if(flotMax!=0){
             stDist+="/"+flotMax;
         }
         g2.drawString(stDist, xdist, ydist);
+        
+        this.drawArrowHead(g2, x, y, (x+endX)/2, ((y+endY)/2));
         if(graphe.isOriented()){
+            //g2.setColor(a.getBackgroundColor());
           drawArrowHead(g2,x,y,endX,endY);
+          
         }
         g2.dispose();
         
@@ -217,16 +269,19 @@ public class GrapheFenetre extends javax.swing.JFrame {
         Polygon arrowHead = new Polygon();
         AffineTransform tx = new AffineTransform();
         arrowHead.addPoint(0, 5);
-        arrowHead.addPoint(-10, -10);
-        arrowHead.addPoint(10, -10);
-
+        arrowHead.addPoint(-7, -7);
+        arrowHead.addPoint(7, -7);
+        int xtemp=x;
+        int ytemp=y;
+        int endXtemp=endX;
+        int endYtemp=endY;
         tx.setToIdentity();
-        double angle = Math.atan2(endY - y, endX - x);
-        tx.translate(endX, endY);
+        double angle = Math.atan2(endYtemp - ytemp, endXtemp - xtemp);
+        tx.translate(endXtemp, endYtemp);
         tx.rotate(angle - Math.PI / 2d);
-
+        
         g2.setTransform(tx);
-        g2.draw(arrowHead);
+        g2.fill(arrowHead);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -244,10 +299,10 @@ public class GrapheFenetre extends javax.swing.JFrame {
             }
 
         };
-        panelChemin = new javax.swing.JPanel(){
+        panelControl = new javax.swing.JPanel(){
             public void paint(Graphics g){
                 super.paint(g);
-                dessinerChemin(g);
+
             }
         };
         jLabel1 = new javax.swing.JLabel();
@@ -259,6 +314,7 @@ public class GrapheFenetre extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        panelChemin = new javax.swing.JPanel();
         panelAjout = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         dateDebut = new javax.swing.JTextField();
@@ -291,7 +347,7 @@ public class GrapheFenetre extends javax.swing.JFrame {
             .addGap(0, 573, Short.MAX_VALUE)
         );
 
-        panelChemin.setBackground(new java.awt.Color(0, 204, 204));
+        panelControl.setBackground(new java.awt.Color(0, 204, 204));
 
         jLabel1.setText("Depart");
 
@@ -333,52 +389,75 @@ public class GrapheFenetre extends javax.swing.JFrame {
             }
         });
 
+        panelChemin = new javax.swing.JPanel(){
+            public void paint(Graphics g){
+                super.paint(g);
+                dessinerChemin(g);
+            }
+        };
+
         javax.swing.GroupLayout panelCheminLayout = new javax.swing.GroupLayout(panelChemin);
         panelChemin.setLayout(panelCheminLayout);
         panelCheminLayout.setHorizontalGroup(
             panelCheminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelCheminLayout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addGroup(panelCheminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelCheminLayout.createSequentialGroup()
-                        .addComponent(jButton2)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton5))
-                    .addGroup(panelCheminLayout.createSequentialGroup()
-                        .addGroup(panelCheminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(textDepart, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
-                        .addGap(55, 55, 55)
-                        .addGroup(panelCheminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(textFin, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(panelCheminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
-                    .addComponent(boutonChemin))
-                .addContainerGap())
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         panelCheminLayout.setVerticalGroup(
             panelCheminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelCheminLayout.createSequentialGroup()
+            .addGap(0, 124, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout panelControlLayout = new javax.swing.GroupLayout(panelControl);
+        panelControl.setLayout(panelControlLayout);
+        panelControlLayout.setHorizontalGroup(
+            panelControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelControlLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(panelControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(panelChemin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(panelControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(panelControlLayout.createSequentialGroup()
+                            .addComponent(jButton2)
+                            .addGap(18, 18, 18)
+                            .addComponent(jButton4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jButton5))
+                        .addGroup(panelControlLayout.createSequentialGroup()
+                            .addGroup(panelControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(textDepart, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel1))
+                            .addGap(55, 55, 55)
+                            .addGroup(panelControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel2)
+                                .addGroup(panelControlLayout.createSequentialGroup()
+                                    .addComponent(textFin, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(boutonChemin))))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addContainerGap())
+        );
+        panelControlLayout.setVerticalGroup(
+            panelControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelControlLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelCheminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(panelControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2)
                     .addComponent(jButton4)
                     .addComponent(jButton5))
                 .addGap(26, 26, 26)
-                .addGroup(panelCheminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(panelControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel1))
                 .addGap(18, 18, 18)
-                .addGroup(panelCheminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(panelControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textDepart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(textFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(boutonChemin))
-                .addContainerGap(189, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(panelChemin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(47, Short.MAX_VALUE))
         );
 
         boutonChemin.getAccessibleContext().setAccessibleName("");
@@ -506,14 +585,14 @@ public class GrapheFenetre extends javax.swing.JFrame {
                 .addComponent(panelGraphe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelChemin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelControl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelAjout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(panelGraphe, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(panelChemin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panelControl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelAjout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -524,7 +603,7 @@ public class GrapheFenetre extends javax.swing.JFrame {
     private void boutonCheminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boutonCheminActionPerformed
         // TODO add your handling code here:
         this.rechercherPlusCourtChemin(this.textDepart.getText().trim(), this.textFin.getText().trim());
-        panelChemin.repaint();
+        panelControl.repaint();
     }//GEN-LAST:event_boutonCheminActionPerformed
     
     private void saveFile(File fichier){
@@ -571,7 +650,7 @@ public class GrapheFenetre extends javax.swing.JFrame {
        String type="";
        try{
            BufferedReader br = new BufferedReader(new FileReader(fichier)); 
-           System.out.println(br);
+           //System.out.println(br);
            String st; 
            while ((st = br.readLine()) != null){ 
                st=st.trim();
@@ -720,6 +799,7 @@ public class GrapheFenetre extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField5;
     private javax.swing.JPanel panelAjout;
     private javax.swing.JPanel panelChemin;
+    private javax.swing.JPanel panelControl;
     private javax.swing.JPanel panelGraphe;
     private javax.swing.JTextField textDepart;
     private javax.swing.JTextField textFin;

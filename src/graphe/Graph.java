@@ -191,7 +191,7 @@ public class Graph {
             Node s1=trouver_min(Q);
             Q.remove(s1);
             //pour chaque nœud s2 voisin de s1 faire
-            System.out.println(s1.toString());
+            //System.out.println(s1.toString());
             for(Entry<Node,GraphValeur> adjacencyPair:s1.getAdjacentNodes().entrySet()){
                 Node s2=adjacencyPair.getKey();
                 Float distanceS1_S2 = adjacencyPair.getValue().getDistance();
@@ -263,7 +263,7 @@ public class Graph {
             AffecterDateProjet(debutProjet);
             return;
         }
-        System.out.println("Parent:"+parent.toString());
+        //System.out.println("Parent:"+parent.toString());
         //Set Date plus tot et plus tard
         for(Entry<Node,GraphValeur> adjacencyPair:parent.getAdjacentNodes().entrySet()){
                 Node fils=adjacencyPair.getKey();
@@ -310,7 +310,7 @@ public class Graph {
             fin=new Node("FIN");
             this.addNode(fin);
             List<Node> liste=this.noeudSansSuccesseur();
-            System.out.println(liste.size());
+           // System.out.println(liste.size());
             for(Node node:liste){
                 
                 node.addDestination(fin, new GraphValeur(node.dureeTache));  
@@ -436,7 +436,7 @@ public class Graph {
     }
     public void maximiserFlot(){
         Chaine chaine=trouverChaineAmeliorante();
-        System.out.println("Chaine ameliorante:"+chaine.toString());
+        //System.out.println("Chaine ameliorante:"+chaine.toString());
         if(chaine.isEmpty()){
             return;
         }else{
