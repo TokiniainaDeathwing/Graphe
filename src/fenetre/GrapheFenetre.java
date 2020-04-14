@@ -58,11 +58,12 @@ public class GrapheFenetre extends javax.swing.JFrame {
         initComponents();
         initGraphePosition();
         try{
-          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        
         }catch(Exception exc){
             
         }
-        this.graphe.triTopologique();
+        this.graphe.colorierGraphe();
         createLabels();
     
     }
@@ -94,7 +95,7 @@ public class GrapheFenetre extends javax.swing.JFrame {
             //System.out.println(d.getName()+":"+d.getX()+","+d.getY());
             
             JButton btn=new JButton(d.getName());
-          
+            btn.setBackground(d.getBackgroundColor());
             btn.setBounds(d.getX(), d.getY(), rayonNode, rayonNode);
             btn.addMouseMotionListener(new NodeMoveListener(d,panelGraphe));
             
@@ -592,10 +593,11 @@ public class GrapheFenetre extends javax.swing.JFrame {
              }
            } 
           
-          this.graphe.triTopologique(); 
+          this.graphe.colorierGraphe();
           this.createLabels();
           
           panelGraphe.repaint();
+          
        }catch(Exception exc){
            exc.printStackTrace();
        }

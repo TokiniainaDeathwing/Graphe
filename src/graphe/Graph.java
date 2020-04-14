@@ -28,7 +28,7 @@ public class Graph {
         Noir
     }
     private Color[] listeCouleurs={
-        Color.RED,Color.BLUE,Color.GRAY,Color.GRAY,Color.CYAN,Color.YELLOW,Color.PINK,Color.RED,Color.BLUE,Color.GRAY,Color.GRAY,Color.CYAN,Color.YELLOW,Color.PINK
+    Color.YELLOW,Color.CYAN,Color.ORANGE,Color.PINK,Color.MAGENTA,Color.GREEN,Color.BLUE,Color.LIGHT_GRAY,Color.GRAY,Color.RED
     };
     private List<Node> nodes = new ArrayList<Node>();
 
@@ -37,6 +37,78 @@ public class Graph {
         
     }
  
+    public int getMaxDegre(List<Node> liste,int i,int n){
+       int imax=i;
+       if(i==n-1){
+           return imax;
+       }
+       for(int x=i;x<n;x++){
+           Node max=liste.get(imax);
+           Node node=liste.get(x);
+           if(node.getDegre()>max.getDegre()){
+               imax=x;
+           }
+       }
+       return imax;
+    }
+    public List<Node> triParDegreDecroissant(){
+        List<Node> liste=new ArrayList<Node>(this.getNodes());
+        int n=this.getNodes().size();
+        for(int i=0;i<n;i++){
+            int imax=this.getMaxDegre(liste, i, n);
+            Node node=liste.get(i);
+            Node max=liste.get(imax);
+            liste.set(i, max);
+            liste.set(imax, node);
+        }
+        
+        return liste;
+    }
+    public boolean isNear(Node a,Node b){
+        if(a.getAdjacentNodes().containsKey(b)){
+            return true;
+        }
+        if(b.getAdjacentNodes().containsKey(a)){
+            return true;
+        }
+        return false;
+    }
+    public boolean isNear(Node a,List<Node> liste){
+        for(Node b:liste){
+            if(isNear(a,b)){
+                return true;
+            }
+        }
+        return false;
+    }
+    public void colorierGraphe(){
+        List<Node> liste=this.triParDegreDecroissant();
+       for(Node n:liste){
+           System.out.println(n.toString()+":"+n.getDegre());
+       }
+        this.colorierSommets(0, liste);
+    }
+    private void colorierSommets(int icouleur,List<Node> liste){
+        List<Node> listeColories=new ArrayList<Node>();
+        if(liste.isEmpty()){
+            return;
+        }
+        Color color=this.listeCouleurs[icouleur];
+       //System.out.println(liste.size());
+        for(Node node:liste){
+            if(!isNear(node,listeColories)){
+                node.setBackgroundColor(color);
+               
+                
+                listeColories.add(node);
+            }
+        }
+        for(Node node:listeColories){
+            liste.remove(node);
+        }
+            colorierSommets(icouleur+1,liste);
+             
+    }
     public Node getNodeByName(String name){
         Node n=null;
         for(Node d:this.nodes){
@@ -48,12 +120,12 @@ public class Graph {
     }
     private void  Parcours_Profondeur_Topo(Stack<Node> listeNodes,Node x,int[] t){
         x.setCouleur(Couleur.Gris);
-       /* t=new Timestamp(t.getTime()+3600000);
-        x.dateDebut=t;*/
-      //
+       /* t=new Timestamp(t.getTime()+3600000);*/
+        x.debut=t[0];
+      
        t[0]+=1;
-       x.setBackgroundColor(listeCouleurs[t[0]]);
-       System.out.println(t[0]);
+       //x.setBackgroundColor(listeCouleurs[x.debut]);
+       x.tdebut=t[0];
        //x.dateDebut=t[0];
         for(Entry<Node,GraphValeur> adjacencyPair:x.getAdjacentNodes().entrySet()){
            Node adj=adjacencyPair.getKey();
@@ -61,11 +133,14 @@ public class Graph {
                Parcours_Profondeur_Topo( listeNodes, adj,t);
            }
         }
+        
+        
         x.setCouleur(Couleur.Noir);
        // t=new Timestamp(t.getTime()+3600000);
         //x.dateFin=t;
-        //t[0]+=1;
+        t[0]+=1;
         //x.dateFin=t[0];
+        x.tfin=t[0];
         listeNodes.push(x);
     }
     public Stack<Node> triTopologique(){

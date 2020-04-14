@@ -104,6 +104,10 @@ public class GrapheConsole {
          example.setVisible(true);
  
 */
+  graphe.colorierGraphe();
+   for(Node node:graphe.getNodes()){
+      System.out.println(node.toString()+":"+node.tdebut+"/"+node.tfin);
+  }
   GrapheFenetre fenetre=new GrapheFenetre(graphe);
   fenetre.setVisible(true);
 }

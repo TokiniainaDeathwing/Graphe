@@ -35,7 +35,9 @@ public class Node implements Comparable {
     private Timestamp dateFin;
     public boolean sature=false;
     private Color backgroundColor;
-
+    public int debut;
+    public int tdebut=0;
+    public int tfin=0;
     public Color getBackgroundColor() {
         return backgroundColor;
     }
@@ -44,7 +46,15 @@ public class Node implements Comparable {
         this.backgroundColor = backgroundColor;
     }
     
-    
+    public int getDegreEntrant(){
+        return this.getPredecesseurNoeud()==null?0:this.getPredecesseurNoeud().size();
+    }
+    public int getDegreSortant(){
+        return this.getAdjacentNodes()==null?0:this.getAdjacentNodes().size();
+    }
+    public int getDegre(){
+        return getDegreEntrant()+getDegreSortant();
+    }
     public Timestamp getDateDebut() {
         return dateDebut;
     }
