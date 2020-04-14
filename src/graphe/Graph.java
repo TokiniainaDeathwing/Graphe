@@ -27,8 +27,22 @@ public class Graph {
         Gris,
         Noir
     }
+    private boolean oriented=true;
+
+    public boolean isOriented() {
+        return oriented;
+    }
+
+    public void setOriented(boolean oriented) {
+        this.oriented = oriented;
+    }
+
+  
+
+   
+    
     private Color[] listeCouleurs={
-    Color.YELLOW,Color.CYAN,Color.ORANGE,Color.PINK,Color.MAGENTA,Color.GREEN,Color.BLUE,Color.LIGHT_GRAY,Color.GRAY,Color.RED
+    Color.YELLOW,Color.ORANGE,Color.CYAN,Color.PINK,Color.MAGENTA,Color.GREEN,Color.BLUE,Color.LIGHT_GRAY,Color.GRAY,Color.RED
     };
     private List<Node> nodes = new ArrayList<Node>();
 

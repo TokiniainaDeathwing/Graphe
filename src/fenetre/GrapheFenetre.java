@@ -206,7 +206,9 @@ public class GrapheFenetre extends javax.swing.JFrame {
             stDist+="/"+flotMax;
         }
         g2.drawString(stDist, xdist, ydist);
-        drawArrowHead(g2,x,y,endX,endY);
+        if(graphe.isOriented()){
+          drawArrowHead(g2,x,y,endX,endY);
+        }
         g2.dispose();
         
     }
@@ -534,6 +536,11 @@ public class GrapheFenetre extends javax.swing.JFrame {
             FileWriter filewriter=new FileWriter(fichier);
             String nodeinfo="";
             int n=this.graphe.getNodes()==null?0:this.graphe.getNodes().size();
+            String type="oriente";
+            if(!this.graphe.isOriented()){
+                type="non-oriente";
+            }
+            filewriter.write(type+"\n");
             for(int i=0;i<n;i++){
                Node node=this.graphe.getNodes().get(i);
                nodeinfo=node.getName()+":"+node.getX()+","+node.getY();
@@ -561,6 +568,7 @@ public class GrapheFenetre extends javax.swing.JFrame {
     private void importGraph(File fichier){
        this.graphe=new Graph();
        int ligne=0;
+       String type="";
        try{
            BufferedReader br = new BufferedReader(new FileReader(fichier)); 
            System.out.println(br);
@@ -570,6 +578,14 @@ public class GrapheFenetre extends javax.swing.JFrame {
              ligne++;
             
              if(ligne==1){
+                 type=st;
+                 if(type.equals("non-oriente")){
+                     this.graphe.setOriented(false);
+                 }else{
+                     this.graphe.setOriented(true);
+                 }
+             }
+             else if(ligne==2){
                  String[] listeNoeud=st.split(";");
                  for(String noeudValues:listeNoeud){
                      String[] val=noeudValues.split(":");
@@ -579,7 +595,7 @@ public class GrapheFenetre extends javax.swing.JFrame {
                      node.setX(Integer.parseInt(valCoord[0]));
                      node.setY(Integer.parseInt(valCoord[1]));
                      this.graphe.addNode(node);
-                 }
+             }
              }else{
                  String[] values=st.split(":");
                  Node a=graphe.getNodeByName(values[0].substring(0, values[0].indexOf("-")));
@@ -589,6 +605,9 @@ public class GrapheFenetre extends javax.swing.JFrame {
                  valeur.setDistance(Float.parseFloat(values[1]));
                  valeur.setFlotMax(Float.parseFloat(values[2]));
                  a.addDestination(b, valeur);
+                 if(type.equals("non-oriente")){
+                   b.addDestination(a, valeur);
+                 }
                  //a.setFloatMax(Float.parseFloat(values[2]));
              }
            } 
