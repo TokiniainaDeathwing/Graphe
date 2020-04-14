@@ -16,12 +16,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -97,7 +99,38 @@ public class GrapheFenetre extends javax.swing.JFrame {
         for(Node d:this.graphe.getNodes()){
             //System.out.println(d.getName()+":"+d.getX()+","+d.getY());
             
-            JButton btn=new JButton(d.getName());
+            JButton btn=new JButton(d.getName()){
+                Shape shape;    
+                protected void paintComponent(Graphics g) {
+                                // if the button is pressed and ready to be released
+                                if (getModel().isArmed()) {
+                                g.setColor(Color.lightGray);
+                                } else {
+                                g.setColor(getBackground());
+                                }
+
+                                g.fillOval(0, 0, getSize().width-1, getSize().height-1);
+
+                                super.paintComponent(g);
+                        }
+
+                    // paint a round border as opposed to a rectangular one
+                    protected void paintBorder(Graphics g) {
+                    g.setColor(getForeground());
+                    g.drawOval(0, 0, getSize().width-1, getSize().height-1);
+                    }
+
+                    // only clicks within the round shape should be accepted
+                    public boolean contains(int x, int y) {
+                    if (shape == null || !shape.getBounds().equals(getBounds())) {
+                    shape = new Ellipse2D.Float(0, 0, getWidth(), getHeight());
+                    }
+
+                    return shape.contains(x, y);
+                    }
+                
+            };
+            btn.setContentAreaFilled(false);
             btn.setBackground(d.getBackgroundColor());
             btn.setBounds(d.getX(), d.getY(), rayonNode, rayonNode);
             btn.addMouseMotionListener(new NodeMoveListener(d,panelGraphe));
@@ -246,7 +279,7 @@ public class GrapheFenetre extends javax.swing.JFrame {
         
         g2.drawLine(x, y, endX, endY);;
         g2.setColor(Color.GRAY);
-        g2.fillOval(x-3, y-5, 10, 10);
+        //g2.fillOval(x-3, y-5, 10, 10);
         
         
         String stDist=""+distance;
@@ -255,9 +288,10 @@ public class GrapheFenetre extends javax.swing.JFrame {
         }
         g2.drawString(stDist, xdist, ydist);
         
-        this.drawArrowHead(g2, x, y, (x+endX)/2, ((y+endY)/2));
+        
         if(graphe.isOriented()){
             //g2.setColor(a.getBackgroundColor());
+          this.drawArrowHead(g2, x, y, (x+endX)/2, ((y+endY)/2));  
           drawArrowHead(g2,x,y,endX,endY);
           
         }
