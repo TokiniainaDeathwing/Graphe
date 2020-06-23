@@ -38,6 +38,7 @@ public class Node implements Comparable {
     public int debut;
     public int tdebut=0;
     public int tfin=0;
+    public int niveau=0;
     public Color getBackgroundColor() {
         return backgroundColor;
     }

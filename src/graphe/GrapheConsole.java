@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 /**
@@ -69,7 +70,7 @@ public class GrapheConsole {
  
 */
   Graph graphe=new Graph();
-  Node debut=new Node("DEBUT");
+  /*Node debut=new Node("DEBUT");
   Node a=new Node("A");
   Node b=new Node("B");
   Node c=new Node("C");
@@ -104,11 +105,11 @@ public class GrapheConsole {
          example.setVisible(true);
  
 */
-  graphe.colorierGraphe();
-   for(Node node:graphe.getNodes()){
-     // System.out.println(node.toString()+":"+node.tdebut+"/"+node.tfin);
-  }
+ 
+   
   GrapheFenetre fenetre=new GrapheFenetre(graphe);
+   fenetre.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+ 
   fenetre.setVisible(true);
 }
     

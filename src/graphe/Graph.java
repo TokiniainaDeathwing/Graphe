@@ -8,6 +8,7 @@ package graphe;
 import arbre.ArbreGeneral;
 import java.awt.Color;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -38,7 +39,10 @@ public class Graph {
     }
 
   
-
+    public static String formatDate(Timestamp t){
+        String s = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(t);
+        return s;
+    }
    
     
     private Color[] listeCouleurs={
@@ -172,15 +176,32 @@ public class Graph {
         }
         return listeNodes;
     }
-    public  List<Stack<Comparable>> PlusCourtchemin( Node sdeb,Node sarrive) {
+    public  List<Stack<Comparable>> PlusCourtchemin( Node sdeb,Node sarrive,boolean court) {
         // Initialisation
-       Stack<Node> chemin=new Stack<Node>();
+       Node debut=this.getNodeByName("DEBUT");
+       Node fin=this.getNodeByName("FIN");
+       if(debut!=null){
+           this.nodes.remove(debut);
+       }
+       if(fin!=null){
+           this.nodes.remove(fin);
+       }
         for(Node node:this.getNodes()){
-            node.setDistance(Float.MAX_VALUE);
+            if(court){
+              node.setDistance(Float.MAX_VALUE);  
+            }else{
+              node.setDistance(-2F);  
+            }
+            
             node.setPredecesseur(new ArrayList<Node>());
         }
         
-         sdeb.setDistance(new Float(0));
+           
+             sdeb.setDistance(new Float(0));   
+           
+           
+        
+         
          
         //Q := ensemble de tous les nœuds
         Set<Node> Q=new HashSet<>(this.getNodes());
@@ -188,14 +209,26 @@ public class Graph {
         
         //tant que Q n'est pas un ensemble vide faire
         while(!Q.isEmpty()){
-            Node s1=trouver_min(Q);
+            Node s1=null;
+            System.out.print(" liste:"+Q.toString());
+            if(court){
+                s1=trouver_min(Q);
+            }else{
+                s1=trouver_max(Q);
+                
+            }
+            System.out.print("   s1:"+s1+" \n");
+             if(s1==null){
+                 break;
+             }
             Q.remove(s1);
             //pour chaque nœud s2 voisin de s1 faire
             //System.out.println(s1.toString());
             for(Entry<Node,GraphValeur> adjacencyPair:s1.getAdjacentNodes().entrySet()){
                 Node s2=adjacencyPair.getKey();
                 Float distanceS1_S2 = adjacencyPair.getValue().getDistance();
-                maj_Distances(s1,s2,distanceS1_S2);
+                maj_Distances(s1,s2,distanceS1_S2,court);
+                System.out.println();
             }
         }
         
@@ -218,14 +251,18 @@ public class Graph {
             arbre.put(node,null);
             
         }
+        System.out.println("Node: "+node.toString()+" liste:"+listePredecesseur.toString());
         if(listePredecesseur.isEmpty()){
             return;
         }
+        
         for(Node p:listePredecesseur){
             p=p.clone();
+            
             arbre.put(p, node);
             creerArbre(arbre,p,false);
         }
+        
         
     }
     public List<Node> getNodes() {
@@ -246,11 +283,35 @@ public class Graph {
         }
         return sommet;
     }
-    private static void maj_Distances(Node s1,Node s2,Float distanceS1_S2){
-        if(s2.getDistance()>=s1.getDistance()+distanceS1_S2){
+     private static Node trouver_max(Set<Node> Q){
+        Float max=-1F;
+        Node sommet=null;
+        for(Node node:Q){
+           // System.out.println("Max:"+max+" vs "+node.getDistance()+" "+(node.getDistance()>max));
+            if(node.getDistance()>max){
+                max=node.getDistance();
+                sommet=node;
+            }
+        }
+        return sommet;
+    }
+    private static void maj_Distances(Node s1,Node s2,Float distanceS1_S2,boolean court){
+        
+        if(court){
+         if(s2.getDistance()>s1.getDistance()+distanceS1_S2){
+             //System.out.print(" s2: "+s2+" ="+s2.getDistance()+" vs "+(s1.getDistance()+distanceS1_S2));
             s2.setDistance(s1.getDistance()+distanceS1_S2);
             s2.getPredecesseur().add(s1);
+         }  
+        }else{
+            
+         if(s2.getDistance()<=s1.getDistance()+distanceS1_S2){
+            // System.out.print(" s2: "+s2+" ="+s2.getDistance()+" vs "+(s1.getDistance()+distanceS1_S2));
+            s2.setDistance(s1.getDistance()+distanceS1_S2);
+            s2.getPredecesseur().add(s1);
+          }   
         }
+      
     }
     
     public void ordonnerTache(Node parent,Timestamp debutProjet){
@@ -291,6 +352,15 @@ public class Graph {
             //System.out.println(node.toString()+this.nodes.size());
             if(!node.getName().equals("FIN")&&node.getAdjacentNodes().isEmpty()){
                 liste.add(node);
+            }else{
+                if(node.getAdjacentNodes().size()==1){
+                     for(Entry<Node,GraphValeur> adjacencyPair:node.getAdjacentNodes().entrySet()){
+                        Node fils=adjacencyPair.getKey();
+                        if(fils.getName().equals("FIN")){
+                            liste.add(node);
+                        }
+                  }
+                }
             }
         }
         return liste;
@@ -320,7 +390,17 @@ public class Graph {
     public void AffecterDateProjet(Timestamp debutProjet){
         for(Node node:this.nodes){
             Timestamp dateDebut=new Timestamp(debutProjet.getTime()+node.dateDebutTot.longValue()*24*3600*1000);
-            Timestamp dateFin=new Timestamp(dateDebut.getTime()+node.dureeTache.longValue()*24*3600*1000);
+            Float t=node.dureeTache.intValue()*24.0F*3600.0F*1000.0F;
+            Float decimal=node.dureeTache-node.dureeTache.intValue();
+            if(decimal!=0){
+               t+= decimal*8.0F*3600.0F*1000.0F;
+            }
+            decimal=node.dateDebutTot-node.dateDebutTot.intValue();
+             if(decimal!=0){
+                 Float t2=decimal*8.0F*3600.0F*1000.0F;
+               node.setDateDebut(new Timestamp(dateDebut.getTime()+t2.longValue())) ;
+            }
+            Timestamp dateFin=new Timestamp(dateDebut.getTime()+(t).longValue());
             node.setDateFin(dateFin);
             node.setDateDebut(dateDebut);
         }
@@ -366,7 +446,7 @@ public class Graph {
         node.dateDebutTot=max;
     }
     private void trouverChaine(Chaine chaine,Node node,List<Node> listePuits){
-     
+        System.out.println();
         if(listePuits.contains(node)){
             
             return;
@@ -436,13 +516,103 @@ public class Graph {
     }
     public void maximiserFlot(){
         Chaine chaine=trouverChaineAmeliorante();
-        //System.out.println("Chaine ameliorante:"+chaine.toString());
+        System.out.println("Chaine ameliorante:"+chaine.toString());
         if(chaine.isEmpty()){
             return;
         }else{
             chaine.ameliorerChaine();
         }
-        maximiserFlot();
+       // maximiserFlot();
+    }
+ 
+    public int getMinDate(List<Node> liste,int i,int n){
+       int imin=i;
+       if(i==n-1){
+           return imin;
+       }
+       for(int x=i;x<n;x++){
+           Node min=liste.get(imin);
+           Node node=liste.get(x);
+           if(node.getDateDebut().compareTo(min.getDateDebut())<0){
+               imin=x;
+           }
+       }
+       return imin;
+    }
+    public List<Node> triNoeudParDateDebut(){
+        List<Node> liste=new ArrayList<Node>(this.nodes);
+        Node debut=this.getNodeByName("DEBUT");
+        liste.remove(debut);
+        int n=liste.size();
+        for(int i=0;i<n;i++){
+            int imax=this.getMinDate(liste, i, n);
+            Node node=liste.get(i);
+            Node max=liste.get(imax);
+            liste.set(i, max);
+            liste.set(imax, node);
+        }
+        liste.add(0,debut);
+        return liste;
+    }
+    public void classerNoeudParNiveau(Node node,List<Node> liste,int niveau){
+        if(node==null){
+            node=this.getNodeByName("DEBUT");
+            node.niveau=0;
+            liste.add(node);
+        }
+        else if(node.getName().equals("FIN")){
+            return;
+        }else{
+            node.niveau=niveau;
+            liste.add(node);
+        }
+        for(Entry<Node,GraphValeur> adjacencyPair:node.getAdjacentNodes().entrySet()){
+            Node successeur=adjacencyPair.getKey();
+            classerNoeudParNiveau(successeur,liste,niveau+1);
+        }
+        
+    }
+    public String[][] getDataJTable(){
+         List<Node> liste=this.triNoeudParDateDebut();
+         Node  debut=this.getNodeByName("DEBUT");
+        /* this.classerNoeudParNiveau(null, liste, 0);
+         
+         liste.add(this.getNodeByName("FIN"));*/
+        String[][] data=new String[liste.size()][5];
+        int i=0;
+       
+        for(Node node:liste){
+            data[i][0]="";
+            for(int x=0;x<=node.niveau;x++){
+             data[i][0]+="   ";    
+            }
+            
+          
+            data[i][0]+=node.getName();
+            data[i][1]=node.dureeTache+"";
+           
+            data[i][2]=formatDate(node.getDateDebut());
+            data[i][3]=formatDate(node.getDateFin());
+            data[i][4]="";
+            for(Node prede:node.getPredecesseurNoeud()){
+                data[i][4]+=prede.toString()+",";
+            }
+            if(node.getPredecesseurNoeud().size()>0)
+             data[i][4]=data[i][4].substring(0, data[i][4].length()-1);
+            
+            if(node.getName().equals("DEBUT")){
+                data[i][1]="";
+                data[i][2]+="(Date début du projet)";
+                data[i][3]="";
+            }
+            if(node.getName().equals("FIN")){
+                data[i][1]=node.dateDebutTot+"(Durée du projet)";
+                data[i][2]="";
+                data[i][3]+="(Date fin du projet)";
+            }
+            i++;
+        }
+        return data;
     }
 }
 

@@ -99,11 +99,12 @@ public class Chaine {
              if(adjacencyPair.containsKey(noeudSuivant)){
                 GraphValeur valeur=adjacencyPair.get(noeudSuivant);
                 valeur.setDistance(valeur.getDistance()+flot);
-                
+                noeud.dureeTache=valeur.getDistance()+flot;
             }else if(listePredecesseur.contains(noeudSuivant)){
                 Map<Node, GraphValeur> adjacencyPair2= noeudSuivant.getAdjacentNodes();
                 GraphValeur valeur=adjacencyPair2.get(noeud);
                 valeur.setDistance(valeur.getDistance()-flot);
+                noeudSuivant.dureeTache=valeur.getDistance()-flot;
             }else{
                 
             }           

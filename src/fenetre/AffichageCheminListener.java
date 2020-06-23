@@ -25,7 +25,7 @@ public class AffichageCheminListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
        
-     System.out.println(this.grapheFenetre.cheminAffiche+"/"+chemin);
+    // System.out.println(this.grapheFenetre.cheminAffiche+"/"+chemin);
      if(this.grapheFenetre.cheminAffiche.equals(chemin)){
          this.grapheFenetre.cheminAffiche="";
          this.grapheFenetre.repaint();
